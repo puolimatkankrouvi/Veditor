@@ -21,16 +21,6 @@ namespace WindowsForms
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void fileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private async void OpenMenuItem_Click(object sender, EventArgs e)
         {
             Stream virta = null;
@@ -158,11 +148,6 @@ namespace WindowsForms
                     textPanel.SelectionStart = kursori;
                 }
             }
-        }
-
-        private void fontToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
         }
     }
 }
