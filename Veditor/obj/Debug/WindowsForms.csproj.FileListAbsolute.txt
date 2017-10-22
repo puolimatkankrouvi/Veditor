@@ -1,0 +1,9 @@
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\WindowsForms.csprojResolveAssemblyReference.cache
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\WindowsForms.csproj.GenerateResource.Cache
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\WindowsForms.Veditor.resources
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\Veditor.Properties.Resources.resources
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\bin\Debug\Veditor.exe.config
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\bin\Debug\Veditor.exe
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\bin\Debug\Veditor.pdb
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\Veditor.exe
+C:\Users\cde_1_000\documents\visual studio 2017\Projects\WindowsForms\WindowsForms\obj\Debug\Veditor.pdb
