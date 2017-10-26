@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Drawing.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
@@ -16,9 +17,38 @@ namespace WindowsForms
     public partial class Veditor : Form
     {
 
+        public String current_file = null;
+
         public Veditor()
         {
             InitializeComponent();
+
+            InitializeFonts();
+
+            
+        }
+        private void InitializeFonts()
+        {
+            InstalledFontCollection ifc = new InstalledFontCollection();
+
+            Single initialFontSize = 14.0f;
+
+            FontFamily[] fontFamilies = ifc.Families;
+
+            //Trying to find Consolas
+            if ( Array.Exists( fontFamilies, element => element.Name.Equals("Consolas") ) )
+            {
+                textPanel.Font = new Font("Consolas", initialFontSize);
+            }
+            //Then Courier should exist
+            else if (Array.Exists(fontFamilies, element => element.Name.Equals("Courier")))
+            {
+                textPanel.Font = new Font("Courier", initialFontSize);
+            }
+            
+
+            
+
         }
 
         private async void OpenMenuItem_Click(object sender, EventArgs e)
@@ -45,6 +75,8 @@ namespace WindowsForms
                             await virta.ReadAsync(result, 0, (int)virta.Length);
 
                             textPanel.Text = Encoding.UTF8.GetString(result);
+
+                            current_file = avausdialogi.FileName;
 
                             textPanel.Refresh();
 
@@ -97,23 +129,10 @@ namespace WindowsForms
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FileStream virta = null;
-            SaveFileDialog saveDialog = new SaveFileDialog();
 
-            saveDialog.InitialDirectory = "c://";
-            saveDialog.Filter = "txt files (*.txt)|*.txt";
-            saveDialog.RestoreDirectory = true;
+            saveAs();
 
-            if (saveDialog.ShowDialog() == DialogResult.OK)
-            {
-                if ((virta = (FileStream)saveDialog.OpenFile()) != null)
-                {
-                    byte[] fileContents = Encoding.UTF8.GetBytes(textPanel.Text);
-
-                    virta.Write(fileContents, 0, fileContents.Length);
-                    virta.Close();
-                }
-            }
+            
         }
 
         private void textPanel_KeyPressed(object sender, KeyPressEventArgs e)
@@ -147,6 +166,66 @@ namespace WindowsForms
                     textPanel.Text = textPanel.Text.Insert(textPanel.SelectionStart, "\"");
                     textPanel.SelectionStart = kursori;
                 }
+            }
+        }
+
+        private void fontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FontDialog font_dialog = new FontDialog();
+            
+            font_dialog.Font = textPanel.Font;
+
+            font_dialog.ShowDialog();
+            
+            textPanel.Font = font_dialog.Font;
+                
+        }
+
+        private void saveAs()
+        {
+            FileStream virta = null;
+            SaveFileDialog saveDialog = new SaveFileDialog();
+
+            saveDialog.InitialDirectory = "c://";
+            saveDialog.Filter = "txt files (*.txt)|*.txt";
+            saveDialog.RestoreDirectory = true;
+
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                if ((virta = (FileStream)saveDialog.OpenFile()) != null)
+                {
+                    byte[] fileContents = Encoding.UTF8.GetBytes(textPanel.Text);
+
+                    virta.Write(fileContents, 0, fileContents.Length);
+                    virta.Close();
+                    Console.WriteLine(saveDialog.FileName);
+                    current_file = saveDialog.FileName;
+                }
+            }
+        }
+
+        private void save()
+        {
+            if(current_file != null)
+            {
+                FileStream virta = new FileStream(current_file,FileMode.Append);
+
+                byte[] fileContents = Encoding.UTF8.GetBytes(textPanel.Text);
+                virta.Write(fileContents, 0, fileContents.Length);
+                virta.Close();
+            }
+            
+        }
+
+        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if(current_file == null)
+            {
+                saveAs();
+            }
+            else
+            {
+                save();
             }
         }
     }
