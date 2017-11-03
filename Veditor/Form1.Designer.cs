@@ -31,12 +31,13 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textPanel = new System.Windows.Forms.TextBox();
-            this.saveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,6 +56,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
             this.openMenuItem,
             this.saveToolStripMenuItem1,
             this.saveToolStripMenuItem,
@@ -70,6 +72,14 @@
             this.openMenuItem.Size = new System.Drawing.Size(181, 26);
             this.openMenuItem.Text = "&Open";
             this.openMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
+            // 
+            // saveToolStripMenuItem1
+            // 
+            this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
+            this.saveToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.saveToolStripMenuItem1.Text = "&Save";
+            this.saveToolStripMenuItem1.Click += new System.EventHandler(this.saveToolStripMenuItem1_Click);
             // 
             // saveToolStripMenuItem
             // 
@@ -101,34 +111,28 @@
             this.fontToolStripMenuItem.Text = "&Font";
             this.fontToolStripMenuItem.Click += new System.EventHandler(this.fontToolStripMenuItem_Click);
             // 
-            // textPanel
+            // newToolStripMenuItem
             // 
-            this.textPanel.AcceptsReturn = true;
-            this.textPanel.AcceptsTab = true;
-            this.textPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textPanel.Location = new System.Drawing.Point(0, 28);
-            this.textPanel.MinimumSize = new System.Drawing.Size(200, 200);
-            this.textPanel.Multiline = true;
-            this.textPanel.Name = "textPanel";
-            this.textPanel.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textPanel.Size = new System.Drawing.Size(982, 615);
-            this.textPanel.TabIndex = 1;
-            this.textPanel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textPanel_KeyPressed);
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.newToolStripMenuItem.Text = "&New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
-            // saveToolStripMenuItem1
+            // tabControl1
             // 
-            this.saveToolStripMenuItem1.Name = "saveToolStripMenuItem1";
-            this.saveToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
-            this.saveToolStripMenuItem1.Text = "&Save";
-            this.saveToolStripMenuItem1.Click += new System.EventHandler(this.saveToolStripMenuItem1_Click);
+            this.tabControl1.Location = new System.Drawing.Point(12, 31);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(970, 477);
+            this.tabControl1.TabIndex = 2;
             // 
             // Veditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 643);
-            this.Controls.Add(this.textPanel);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(400, 400);
@@ -141,17 +145,41 @@
 
         }
 
+        private void TabControl1_Selecting(object sender, System.Windows.Forms.TabControlCancelEventArgs e)
+        {
+            var lastTabIndex = tabControl1.TabCount - 1;
+            //Cancelling if selecting the new tab
+            if (e.TabPageIndex == lastTabIndex)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void NewTab_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            var lastTabIndex = tabControl1.TabCount - 1;
+            var areaOfLastTab = tabControl1.GetTabRect(lastTabIndex);
+
+
+
+            if (areaOfLastTab.Contains(e.Location))
+            {
+                AddTab("New file");
+            }
+        }
+
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openMenuItem;
         private System.Windows.Forms.ToolStripMenuItem quitMenuItem;
-        private System.Windows.Forms.TextBox textPanel;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
     }
 }
 
