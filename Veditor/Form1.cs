@@ -17,13 +17,12 @@ namespace WindowsForms
 {
     public partial class Veditor : Form
     {
-        
+        //Todo: Muokkaa-valikko
 
         const String TEXTBOX_KEY = "textbox";
         const String NEW_FILE_TEXT = "New file";
 
-        //Todo: Making these .NET settings
-        private Dictionary<String, Object> settings = new Dictionary<string, object>();
+        
 
         public Veditor()
         {
@@ -34,7 +33,6 @@ namespace WindowsForms
             tabControl1.ItemSize = new Size(150,17);
             tabControl1.Dock = DockStyle.Fill;
 
-            settings.Add("font", null );
         }
 
         private async void OpenMenuItem_Click(object sender, EventArgs e)
