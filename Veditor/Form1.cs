@@ -17,7 +17,8 @@ namespace WindowsForms
 {
     public partial class Veditor : Form
     {
-        //Todo: Muokkaa-valikko
+        //Todo: Muokkaa-valikko,johon copy,paste jne. 
+        // 
 
         const String TEXTBOX_KEY = "textbox";
         const String NEW_FILE_TEXT = "New file";
@@ -32,6 +33,33 @@ namespace WindowsForms
             tabControl1.SizeMode = TabSizeMode.Fixed;
             tabControl1.ItemSize = new Size(150,17);
             tabControl1.Dock = DockStyle.Fill;
+            tabControl1.MouseDown += TabControl1_MouseDown;
+            tabControl1.DrawItem += TabControl1_DrawItem;
+        }
+
+        private void TabControl1_MouseDown(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < tabControl1.TabPages.Count; ++i)
+            {
+
+                Rectangle r = tabControl1.GetTabRect(i);
+
+                Rectangle closeButton = new Rectangle(r.Right - ALUE, r.Top + ETAISYYS_YLHAALTA, 9, 7);
+
+                if (closeButton.Contains(e.Location))
+                {
+                    tabControl1.TabPages.RemoveAt(i);
+                    tabControlChanged();
+                }
+            }
+        }
+
+        private void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            //Creating a close button x
+            e.Graphics.DrawString("x", e.Font, Brushes.Gray, e.Bounds.Right - ETAISYYS_SIVULTA, e.Bounds.Top + ETAISYYS_YLHAALTA);
+            e.Graphics.DrawString(this.tabControl1.TabPages[e.Index].Text, e.Font, Brushes.Black, e.Bounds.Left + 5, e.Bounds.Top + 4);
+            e.DrawFocusRectangle();
 
         }
 
@@ -75,6 +103,8 @@ namespace WindowsForms
                             new_tab.Controls.Add(new_textbox);
 
                             new_textbox.Refresh();
+
+                            tabControlChanged();
 
                             virta.Close();
                         }
@@ -126,8 +156,8 @@ namespace WindowsForms
             var lastTabIndex = tabControl1.TabCount - 1;
             tabControl1.SelectedIndex = lastTabIndex;
 
-            
 
+            tabControl1.Refresh();
 
             return tabControl1.SelectedTab;
         }
@@ -260,11 +290,12 @@ namespace WindowsForms
 
                     virta.Write(fileContents, 0, fileContents.Length);
                     virta.Close();
-
-                    currentTextBox.Name = saveDialog.FileName;
+                    currentTextBox.Name = trimFilename(saveDialog.FileName);
                     //Updating file by adding and removing
                     tabControl1.SelectedTab.Controls.RemoveByKey(TEXTBOX_KEY);
                     tabControl1.SelectedTab.Controls.Add(currentTextBox);
+                    tabControl1.SelectedTab.Text = trimFilename(saveDialog.FileName);
+                    tabControl1.Refresh();
                 }
             }
         }
@@ -274,7 +305,7 @@ namespace WindowsForms
             //Current text box should always exist
             TextBox currentTextBox = tabControl1.SelectedTab.Controls.OfType<TextBox>().First();
 
-            if (currentTextBox.Name != null)
+            if (currentTextBox.Name != NEW_FILE_TEXT)
             {
                 FileStream virta = new FileStream(currentTextBox.Name,FileMode.Append);
 
@@ -289,6 +320,7 @@ namespace WindowsForms
 
         private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            
             TextBox currentTextBox = tabControl1.SelectedTab.Controls.OfType<TextBox>().First();
 
             //If filename has not been added
@@ -316,6 +348,23 @@ namespace WindowsForms
             new_tab.Controls.Add(new_textbox);
 
             new_textbox.Refresh();
+
+            tabControlChanged();
+        }
+
+        public void tabControlChanged()
+        {
+            if(tabControl1.TabCount > 0)
+            {
+                saveAsToolStripMenuItem.Enabled = true;
+                saveToolStripMenuItem.Enabled = true;
+            }
+            else
+            {
+                saveAsToolStripMenuItem.Enabled = false;
+                saveToolStripMenuItem.Enabled = false;
+            }
+            
         }
     }
 }
