@@ -17,8 +17,8 @@ namespace WindowsForms
 {
     public partial class Veditor : Form
     {
-        //Todo: Muokkaa-valikko,johon copy,paste jne. 
-        // 
+        //Todo:
+        //Muokkaa-valikko,johon copy,paste jne.
 
         const String TEXTBOX_KEY = "textbox";
         const String NEW_FILE_TEXT = "New file";
@@ -96,10 +96,12 @@ namespace WindowsForms
 
 
                             //Cutting folder from full file name
-                            String fname = trimFilename(avausdialogi.FileName);
+                            String full_path = avausdialogi.FileName;
+                            String fname = getFilename(full_path);
 
                             //Opening file to new tab
                             TabPage new_tab = AddTab(fname);
+                            new_tab.Name = full_path;
                             new_tab.Controls.Add(new_textbox);
 
                             new_textbox.Refresh();
@@ -119,7 +121,7 @@ namespace WindowsForms
 
         }
 
-        public String trimFilename(String filename)
+        public String getFilename(String filename)
         {
 
             const int MAX_LENGTH = 23;
@@ -129,7 +131,7 @@ namespace WindowsForms
 
             String trimmed_filename;
 
-            
+
             //Only the filename
             trimmed_filename = split.Last();
             
@@ -288,13 +290,17 @@ namespace WindowsForms
                 {
                     byte[] fileContents = Encoding.UTF8.GetBytes(currentTextBox.Text);
 
+                    String full_path = saveDialog.FileName;
+
                     virta.Write(fileContents, 0, fileContents.Length);
                     virta.Close();
-                    currentTextBox.Name = trimFilename(saveDialog.FileName);
+                    //Saving full file path to TabPage.Name
+                    tabControl1.SelectedTab.Name = full_path;
                     //Updating file by adding and removing
                     tabControl1.SelectedTab.Controls.RemoveByKey(TEXTBOX_KEY);
                     tabControl1.SelectedTab.Controls.Add(currentTextBox);
-                    tabControl1.SelectedTab.Text = trimFilename(saveDialog.FileName);
+                    //Saving short filename to
+                    tabControl1.SelectedTab.Text = getFilename(full_path);
                     tabControl1.Refresh();
                 }
             }
@@ -302,12 +308,15 @@ namespace WindowsForms
 
         private void save()
         {
-            //Current text box should always exist
-            TextBox currentTextBox = tabControl1.SelectedTab.Controls.OfType<TextBox>().First();
+            
 
-            if (currentTextBox.Name != NEW_FILE_TEXT)
+            if (tabControl1.SelectedTab.Text != NEW_FILE_TEXT)
             {
-                FileStream virta = new FileStream(currentTextBox.Name,FileMode.Append);
+                
+                TextBox currentTextBox = tabControl1.SelectedTab.Controls.OfType<TextBox>().First();
+
+                //Here the first argument should is full file path
+                FileStream virta = new FileStream(tabControl1.SelectedTab.Name, FileMode.Truncate);
 
                 byte[] fileContents = Encoding.UTF8.GetBytes(currentTextBox.Text);
                 virta.Write(fileContents, 0, fileContents.Length);
@@ -318,13 +327,13 @@ namespace WindowsForms
             
         }
 
-        private void saveToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            TextBox currentTextBox = tabControl1.SelectedTab.Controls.OfType<TextBox>().First();
+
+            Console.Write(tabControl1.SelectedTab.Text);
 
             //If filename has not been added
-            if (currentTextBox.Name != null)
+            if (tabControl1.SelectedTab.Text == NEW_FILE_TEXT)
             {
                 saveAs();
             }
