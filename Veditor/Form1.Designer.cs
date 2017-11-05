@@ -1,4 +1,6 @@
-﻿namespace WindowsForms
+﻿using System.Drawing;
+using System.Windows.Forms;
+namespace WindowsForms
 {
     partial class Veditor
     {
@@ -6,6 +8,10 @@
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        const int ETAISYYS_YLHAALTA = 4;
+        const int ETAISYYS_SIVULTA = 15;
+        const int ALUE = 12;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -126,6 +132,11 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(970, 477);
             this.tabControl1.TabIndex = 2;
+            this.tabControl1.DrawItem += TabControl1_DrawItem;
+            this.tabControl1.MouseDown += TabControl1_MouseDown;
+
+            
+
             // 
             // Veditor
             // 
@@ -145,27 +156,29 @@
 
         }
 
-        private void TabControl1_Selecting(object sender, System.Windows.Forms.TabControlCancelEventArgs e)
+        private void TabControl1_MouseDown(object sender, MouseEventArgs e)
         {
-            var lastTabIndex = tabControl1.TabCount - 1;
-            //Cancelling if selecting the new tab
-            if (e.TabPageIndex == lastTabIndex)
+            for(int i = 0; i < tabControl1.TabPages.Count; ++i)
             {
-                e.Cancel = true;
+
+                Rectangle r = tabControl1.GetTabRect(i);
+
+                Rectangle closeButton = new Rectangle(r.Right - ALUE, r.Top + ETAISYYS_YLHAALTA, 9, 7);
+
+                if (closeButton.Contains(e.Location))
+                {
+                    this.tabControl1.TabPages.RemoveAt(i);
+                }
             }
         }
 
-        private void NewTab_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
+        private void TabControl1_DrawItem(object sender, DrawItemEventArgs e)
         {
-            var lastTabIndex = tabControl1.TabCount - 1;
-            var areaOfLastTab = tabControl1.GetTabRect(lastTabIndex);
+            //Creating a close button x
+            e.Graphics.DrawString("x", e.Font, Brushes.Gray, e.Bounds.Right - ETAISYYS_SIVULTA, e.Bounds.Top + ETAISYYS_YLHAALTA);
+            e.Graphics.DrawString(this.tabControl1.TabPages[e.Index].Text, e.Font, Brushes.Black, e.Bounds.Left + 5, e.Bounds.Top + 4);
+            e.DrawFocusRectangle();
 
-
-
-            if (areaOfLastTab.Contains(e.Location))
-            {
-                AddTab("New file");
-            }
         }
 
         #endregion

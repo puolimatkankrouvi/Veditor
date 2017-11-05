@@ -16,18 +16,22 @@ namespace WindowsForms
 {
     public partial class Veditor : Form
     {
-        //Todo: saving files and settings to a file
-        //Closing tab file
+        
 
-        private String textBoxKey = "textbox";
+        const String TEXTBOX_KEY = "textbox";
+        const String NEW_FILE_TEXT = "New file";
 
-        private String newFileText = "New file";
-
+        //Todo: Making these .NET settings
         private Dictionary<String, Object> settings = new Dictionary<string, object>();
 
         public Veditor()
         {
             InitializeComponent();
+
+            tabControl1.DrawMode = TabDrawMode.OwnerDrawFixed;
+            tabControl1.SizeMode = TabSizeMode.Fixed;
+            tabControl1.ItemSize = new Size(150,17);
+            tabControl1.Dock = DockStyle.Fill;
 
             settings.Add("font", null );
         }
@@ -58,14 +62,17 @@ namespace WindowsForms
 
                             TextBox new_textbox = new TextBox();
                             new_textbox.Text = Encoding.UTF8.GetString(contents);
-                            new_textbox.Name = textBoxKey;
+                            new_textbox.Name = TEXTBOX_KEY;
                             new_textbox.Multiline = true;
                             new_textbox.ScrollBars = ScrollBars.Both;
                             new_textbox.Dock = DockStyle.Fill;
 
 
+                            //Cutting folder from full file name
+                            String fname = trimFilename(avausdialogi.FileName);
+
                             //Opening file to new tab
-                            TabPage new_tab = AddTab(avausdialogi.FileName);
+                            TabPage new_tab = AddTab(fname);
                             new_tab.Controls.Add(new_textbox);
 
                             new_textbox.Refresh();
@@ -83,13 +90,45 @@ namespace WindowsForms
 
         }
 
+        public String trimFilename(String filename)
+        {
+
+            const int MAX_LENGTH = 23;
+
+            //Splitting the filename with \
+            String[] split = filename.Split('\\');
+
+            String trimmed_filename;
+
+            
+            //Only the filename
+            trimmed_filename = split.Last();
+            
+            //Folder and filename
+            //trimmed_filename = split[split.Length - 2 ] + '\\' + split[split.Length - 1];
+
+            //Making trimmed filename max some characters long
+            if(trimmed_filename.Length <= MAX_LENGTH)
+            {
+                return trimmed_filename;
+            }
+            else
+            {
+                return ".." + trimmed_filename.Substring(trimmed_filename.Length - MAX_LENGTH);
+            }
+        }
+
         public TabPage AddTab(String filename) {
+
 
             
             tabControl1.TabPages.Add(filename);
 
             var lastTabIndex = tabControl1.TabCount - 1;
             tabControl1.SelectedIndex = lastTabIndex;
+
+            
+
 
             return tabControl1.SelectedTab;
         }
@@ -193,7 +232,7 @@ namespace WindowsForms
             {
                 foreach (TabPage tabpage in tabControl1.Controls.OfType<TabPage>())
                 {
-                    tabpage.Controls[textBoxKey].Font = font;
+                    tabpage.Controls[TEXTBOX_KEY].Font = font;
                 }
             }
             
@@ -223,7 +262,7 @@ namespace WindowsForms
 
                     currentTextBox.Name = saveDialog.FileName;
                     //Updating file by adding and removing
-                    tabControl1.SelectedTab.Controls.RemoveByKey(textBoxKey);
+                    tabControl1.SelectedTab.Controls.RemoveByKey(TEXTBOX_KEY);
                     tabControl1.SelectedTab.Controls.Add(currentTextBox);
                 }
             }
@@ -265,14 +304,14 @@ namespace WindowsForms
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TextBox new_textbox = new TextBox();
-            new_textbox.Name = textBoxKey;
+            new_textbox.Name = TEXTBOX_KEY;
             new_textbox.Multiline = true;
             new_textbox.ScrollBars = ScrollBars.Both;
             new_textbox.Dock = DockStyle.Fill;
 
 
             //Opening file to new tab
-            TabPage new_tab = AddTab(newFileText);
+            TabPage new_tab = AddTab(NEW_FILE_TEXT);
             new_tab.Controls.Add(new_textbox);
 
             new_textbox.Refresh();
