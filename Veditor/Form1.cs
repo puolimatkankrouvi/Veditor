@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -9,7 +10,7 @@ using System.Drawing.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-
+using Veditor.Properties;
 
 
 namespace WindowsForms
@@ -207,22 +208,24 @@ namespace WindowsForms
             }
         }
 
+        
+
         private void fontToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FontDialog font_dialog = new FontDialog();
 
             
             
-            Font initial_font = (Font)settings["font"];
-            if (initial_font != null)
-            {
-                font_dialog.Font = initial_font;
-            } 
+            
+            font_dialog.Font = Settings.Default.Font;
+
             font_dialog.ShowDialog();
             
             changeFont(font_dialog.Font);
 
-            settings["font"] = font_dialog.Font;
+            Settings.Default.Font = font_dialog.Font;
+
+            Settings.Default.Save();
                 
         }
 
